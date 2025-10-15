@@ -184,7 +184,7 @@ local function show_tree()
     local show_help = vim.g["treectl#show_help_by_default"] or false
 
     local winid = vim.api.nvim_get_current_win()
-    local bufnr = vim.api.nvim_create_buf(true, true)
+    local bufnr = vim.api.nvim_create_buf(true, false)
     vim.api.nvim_win_set_buf(winid, bufnr)
     if vim.g[g_main_bufnr] == nil then
         vim.api.nvim_buf_set_name(bufnr, "treectl#0")
