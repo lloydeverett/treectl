@@ -360,27 +360,15 @@ function M.preserve_cursor_selection(tree, callback)
 end
 
 function M.follow_path(path, modules, print_debug)
-    local path_head
-    local path_rest
-    if type(path) == "string" then
-        path_head = path
-        path_rest = {}
-    elseif type(path) == "table" then
-        path_head = path[1]
-        path_rest = { unpack(path, 2) }
-    else
-        error("unexpected path type " .. type(path))
-    end
-
     local log = nil
     if print_debug then
         log = paths.path_display_text(path) .. " -> "
     end
     for _, module_name in ipairs(modules.keys) do
         local module = modules.kv[module_name]
-        local result, err = module.follow_path(path_head, path_rest)
+        local result, err = module.follow_path(path)
         if err == nil then
-            assert(result ~= nil, module_name .. ".follow_path returned nil path with no error code for path wth head " .. path_head)
+            assert(result ~= nil, module_name .. ".follow_path returned nil path with no error code for path " .. M.node_get_path_display_text(path))
             if print_debug then
                 log = log .. "(" .. module_name .. ") " .. M.node_get_path_display_text(result)
                 print(log)

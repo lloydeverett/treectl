@@ -22,11 +22,11 @@ local function stash(n)
     return M._cache:stash(n)
 end
 
-function M.follow_path(path_head, path_rest)
-    if not luautils.starts_with(path_head, "neovim/") and path_head ~= "neovim" then
+function M.follow_path(path)
+    if not luautils.starts_with(path, "neovim/") and path ~= "neovim" then
         return nil, paths.PATH_NOT_HANDLED
     end
-    local cached_value = M._cache:get(path_head, path_rest)
+    local cached_value = M._cache:get(path)
     if cached_value ~= nil then
         return cached_value
     end
@@ -87,7 +87,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
             return recents_recycler:try_recycle(nodes.node(
                 { { "" .. (i - 1), highlights.Number }, " ", shortened_path },
                 {
-                    path = { "neovim/recent/", f },
+                    path = "neovim/recent/" .. "\0" .. f,
                     details = {
                         filepath = f,
                         index = i - 1
