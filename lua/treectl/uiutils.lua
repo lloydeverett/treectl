@@ -43,7 +43,7 @@ function M.node_expand(tree, n)
     if M.is_node_lazy(n) then
         local provider = n.opts.provider
         if provider ~= nil then
-            for index, child_node in ipairs(provider:create_children(n, {})) do
+            for _, child_node in ipairs(provider:create_children(n, {})) do
                 tree:add_node(child_node, n:get_id())
             end
         end
@@ -58,16 +58,64 @@ function M.node_expand(tree, n)
     end
 end
 
+function M.set_nodes_with_cache_invalidation(tree, new_nodes, parent_node_id)
+    local parent_node = tree:get_node(parent_node_id)
+
+    -- work out what's about to be removed from the parent node
+    local removing_nodes = { }
+    local nodes_by_id = { }
+    for _, n_id in ipairs(parent_node:get_child_ids()) do
+        nodes_by_id[n_id] = tree:get_node(n_id)
+    end
+    for _, n in ipairs(new_nodes) do
+        if n:get_id() ~= nil then
+            nodes_by_id[n:get_id()] = nil
+        end
+    end
+    for _, n in pairs(nodes_by_id) do
+        table.insert(removing_nodes, n)
+    end
+
+    -- determine candidate nodes for cache invalidation
+    local candidates = { }
+    local function acc_all_nodes(n)
+        table.insert(candidates, n)
+        for _, child_id in ipairs(n:get_child_ids()) do
+            acc_all_nodes(tree:get_node(child_id))
+        end
+    end
+    for _, n in ipairs(removing_nodes) do
+        acc_all_nodes(n)
+    end
+
+    -- it looks like NUI tree:set_nodes doesn't actually clean up children of removed nodes from the tree
+    -- so, we need to remove them ourselves prior to the set call
+    for _, n in ipairs(removing_nodes) do
+        tree:remove_node(n:get_id())
+    end
+
+    tree:set_nodes(new_nodes, parent_node_id)
+
+    -- invalidate cache entries where necessary
+    local removals = ""
+    for _, n in ipairs(candidates) do
+        assert(tree:get_node(n:get_id()) == nil, "expected node to be removed from tree but it's still here")
+
+        --  TODO: remove from cache instead of just printing
+        removals = removals .. n:get_id() .. "; "
+    end
+    print(removals)
+end
+
 function M.node_collapse(tree, n)
     if not n:is_expanded() then
         return
     end
 
     n:collapse()
+
     if M.is_node_lazy(n) then
-        for index, child_id in ipairs(n:get_child_ids()) do
-            tree:remove_node(child_id)
-        end
+        M.set_nodes_with_cache_invalidation(tree, { }, n:get_id())
     end
 end
 
@@ -82,17 +130,14 @@ function M.node_refresh_children(tree, n)
     end
 
     local current_children = {}
-    for index, child_id in ipairs(n:get_child_ids()) do
+    for _, child_id in ipairs(n:get_child_ids()) do
         local node = tree:get_node(child_id)
         table.insert(current_children, node)
     end
 
     local new_children = provider:create_children(n, current_children)
-    if new_children == nil then
-        return
-    end
 
-    tree:set_nodes(new_children, n:get_id())
+    M.set_nodes_with_cache_invalidation(tree, new_children, n:get_id())
 end
 
 function M.refresh_all_children(tree, filter_for_provider)
@@ -104,11 +149,11 @@ function M.refresh_all_children(tree, filter_for_provider)
             M.node_refresh_children(tree, n)
         end
 
-        for index, child_id in ipairs(n:get_child_ids()) do
+        for _, child_id in ipairs(n:get_child_ids()) do
             refresh_recursively(child_id)
         end
     end
-    for index, top_level_node in ipairs(tree:get_nodes()) do
+    for _, top_level_node in ipairs(tree:get_nodes()) do
         refresh_recursively(top_level_node:get_id())
     end
 end
