@@ -332,7 +332,6 @@ function M.setup()
     math.randomseed(os.time())
 
     highlights.configure()
-
     local augroup = vim.api.nvim_create_augroup('treectl_highlights', { clear = true })
     vim.api.nvim_create_autocmd("ColorScheme", {
         callback = function()
@@ -341,19 +340,27 @@ function M.setup()
         group = augroup
     })
 
-    vim.keymap.set("n", "<leader>n", function()
-        if vim.g[g_main_bufnr] ~= nil and vim.api.nvim_buf_is_loaded(vim.g[g_main_bufnr]) then
-            local winid = vim.api.nvim_get_current_win()
-            vim.api.nvim_win_set_buf(winid, vim.g[g_main_bufnr])
-        else
-            vim.g[g_main_bufnr] = nil
-            show_tree()
-        end
-    end)
+    vim.api.nvim_create_user_command(
+        'Treectl',
+        function(_)
+            if vim.g[g_main_bufnr] ~= nil and vim.api.nvim_buf_is_loaded(vim.g[g_main_bufnr]) then
+                local winid = vim.api.nvim_get_current_win()
+                vim.api.nvim_win_set_buf(winid, vim.g[g_main_bufnr])
+            else
+                vim.g[g_main_bufnr] = nil
+                show_tree()
+            end
+        end,
+        { nargs = 0 }
+    )
 
-    vim.keymap.set("n", "<leader>m", function()
-        show_tree()
-    end)
+    vim.api.nvim_create_user_command(
+        'TreectlNewBuf',
+        function(_)
+            show_tree()
+        end,
+        { nargs = 0 }
+    )
 
 end
 
