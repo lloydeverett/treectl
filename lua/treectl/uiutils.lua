@@ -97,14 +97,14 @@ function M.set_nodes_with_cache_invalidation(tree, new_nodes, parent_node_id)
     tree:set_nodes(new_nodes, parent_node_id)
 
     -- invalidate cache entries where necessary
-    local removals = ""
     for _, n in ipairs(candidates) do
         assert(tree:get_node(n:get_id()) == nil, "expected node to be removed from tree but it's still here")
 
-        --  TODO: remove from cache instead of just printing
-        removals = removals .. n:get_id() .. "; "
+        if n.opts.cached_in ~= nil then
+            n.opts.cached_in:remove(n)
+            n.opts.cached_in = nil
+        end
     end
-    print(removals)
 end
 
 function M.node_collapse(tree, n)

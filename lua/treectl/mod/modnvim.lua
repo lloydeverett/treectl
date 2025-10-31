@@ -52,10 +52,10 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
             if display_name == "" then
                 display_name = "[No Name]"
             end
-            return buffer_recycler:try_recycle(nodes.node(
+            return stash(buffer_recycler:try_recycle(nodes.node(
                 { { "" .. b.bufnr, highlights.Number }, " ", display_name },
                 { path = "neovim/buffer/" .. b.bufnr }
-            ))
+            )))
         end)
     end)))
 )
