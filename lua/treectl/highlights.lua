@@ -15,18 +15,27 @@ M.TreeModBuiltins = "treectl_TreeModBuiltins"
 M.TreeModOther = "treectl_TreeModOther"
 
 function M.configure()
-    vim.api.nvim_set_hl(0, "treectl_Comment"          , { link = "Comment" })
-    vim.api.nvim_set_hl(0, "treectl_Hidden"           , { link = "Comment" })
-    vim.api.nvim_set_hl(0, "treectl_Directory"        , { link = "Directory" })
-    vim.api.nvim_set_hl(0, "treectl_ErrorMsg"         , { link = "ErrorMsg" })
-    vim.api.nvim_set_hl(0, "treectl_Number"           , { link = "Number" })
-    vim.api.nvim_set_hl(0, "treectl_Debug"            , { link = "SpecialChar" })
-    vim.api.nvim_set_hl(0, "treectl_IndicatorActive"  , { link = "SpecialChar" })
-    vim.api.nvim_set_hl(0, "treectl_IndicatorInactive", { link = "LineNr" })
-    vim.api.nvim_set_hl(0, "treectl_TreeModFs"        , { link = "markdownH4" })
-    vim.api.nvim_set_hl(0, "treectl_TreeModNvim"      , { link = "markdownH2" })
-    vim.api.nvim_set_hl(0, "treectl_TreeModBuiltins"  , { link = "markdownH5" })
-    vim.api.nvim_set_hl(0, "treectl_TreeModOther"     , { link = "markdownH6" })
+    vim.api.nvim_set_hl(0, M.Comment,           { link = "Comment"     })
+    vim.api.nvim_set_hl(0, M.Hidden,            { link = "Comment"     })
+    vim.api.nvim_set_hl(0, M.Directory,         { link = "Directory"   })
+    vim.api.nvim_set_hl(0, M.ErrorMsg,          { link = "ErrorMsg"    })
+    vim.api.nvim_set_hl(0, M.Number,            { link = "Number"      })
+    vim.api.nvim_set_hl(0, M.Debug,             { link = "SpecialChar" })
+    vim.api.nvim_set_hl(0, M.IndicatorActive,   { link = "SpecialChar" })
+    vim.api.nvim_set_hl(0, M.IndicatorInactive, { link = "LineNr"      })
+
+    local function set_termcolor_hl(name, color_index)
+        local cmd = "hi def " .. name .. " ctermfg=" .. color_index
+        if vim.g['terminal_color_' .. color_index] ~= nil then
+            cmd = cmd .. " guifg=" .. vim.g['terminal_color_' .. color_index]
+        end
+        vim.cmd(cmd)
+    end
+
+    set_termcolor_hl(M.TreeModFs,       2)
+    set_termcolor_hl(M.TreeModNvim,     4)
+    set_termcolor_hl(M.TreeModBuiltins, 6)
+    set_termcolor_hl(M.TreeModOther,    5)
 end
 
 return M
