@@ -153,14 +153,6 @@ else
     table.insert(M._root_nodes, nodes.help_node("t/", { help_suffix = help_suffix_treectl_dir }))
 end
 
-local help_suffix_zoxide = "displays frequent cd directories when zoxide is on the $PATH"
-if not vim.fn.executable("zoxide") == 1 then
-    -- TODO implement
-    table.insert(M._root_nodes, nodes.node("z/", { hl = highlights.TreeModFs, help_suffix = help_suffix_zoxide, path="z" }))
-else
-    table.insert(M._root_nodes, nodes.help_node("z/", { help_suffix = help_suffix_zoxide }))
-end
-
 return M
 end
 
