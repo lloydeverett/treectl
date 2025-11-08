@@ -15,15 +15,6 @@ M.TreeModBuiltins = "treectl_TreeModBuiltins"
 M.TreeModOther = "treectl_TreeModOther"
 
 function M.configure()
-    vim.api.nvim_set_hl(0, M.Comment,           { link = "Comment"     })
-    vim.api.nvim_set_hl(0, M.Hidden,            { link = "Comment"     })
-    vim.api.nvim_set_hl(0, M.Directory,         { link = "Directory"   })
-    vim.api.nvim_set_hl(0, M.ErrorMsg,          { link = "ErrorMsg"    })
-    vim.api.nvim_set_hl(0, M.Number,            { link = "Number"      })
-    vim.api.nvim_set_hl(0, M.Debug,             { link = "SpecialChar" })
-    vim.api.nvim_set_hl(0, M.IndicatorActive,   { link = "SpecialChar" })
-    vim.api.nvim_set_hl(0, M.IndicatorInactive, { link = "LineNr"      })
-
     local function set_termcolor_hl(name, color_index)
         local cmd = "hi def " .. name .. " ctermfg=" .. color_index
         if vim.g['terminal_color_' .. color_index] ~= nil then
@@ -36,6 +27,15 @@ function M.configure()
     set_termcolor_hl(M.TreeModNvim,     4)
     set_termcolor_hl(M.TreeModBuiltins, 6)
     set_termcolor_hl(M.TreeModOther,    5)
+
+    vim.api.nvim_set_hl(0, M.Comment,           { link = "Comment"     })
+    vim.api.nvim_set_hl(0, M.Hidden,            { link = "Comment"     })
+    vim.api.nvim_set_hl(0, M.Directory,         { link = M.TreeModFs   })
+    vim.api.nvim_set_hl(0, M.ErrorMsg,          { link = "ErrorMsg"    })
+    vim.api.nvim_set_hl(0, M.Number,            { link = "Number"      })
+    vim.api.nvim_set_hl(0, M.Debug,             { link = "SpecialChar" })
+    vim.api.nvim_set_hl(0, M.IndicatorActive,   { link = "SpecialChar" })
+    vim.api.nvim_set_hl(0, M.IndicatorInactive, { link = "LineNr"      })
 end
 
 return M
