@@ -194,6 +194,13 @@ local function show_tree()
         vim.g[g_buf_suffix] = vim.g[g_buf_suffix] + 1
     end
 
+    --  HACK: swap back and forth between alternate buffer
+    --        this seems to put the buffer in the bufferline like we want
+    vim.defer_fn(function()
+        vim.cmd("norm ")
+        vim.cmd("norm ")
+    end, 10)
+
     local root_nodes, modules = init_nodes()
 
     local tree = NuiTree({

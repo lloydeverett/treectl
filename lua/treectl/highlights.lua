@@ -24,9 +24,9 @@ function M.configure()
     end
 
     set_termcolor_hl(M.TreeModFs,       2)
-    set_termcolor_hl(M.TreeModNvim,     4)
+    set_termcolor_hl(M.TreeModNvim,     5)
     set_termcolor_hl(M.TreeModBuiltins, 6)
-    set_termcolor_hl(M.TreeModOther,    5)
+    set_termcolor_hl(M.TreeModOther,    4)
 
     vim.api.nvim_set_hl(0, M.Comment,           { link = "Comment"     })
     vim.api.nvim_set_hl(0, M.Hidden,            { link = "Comment"     })

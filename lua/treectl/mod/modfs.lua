@@ -10,8 +10,6 @@ local home_path = nvimutils.home_path()
 return function()
 local M = {}
 
-local cwd = luautils.path_concat(vim.fn.getcwd(), "")
-
 M._show_hidden = vim.g["treectl#modfs#show_hidden_by_default"] or false
 function M.set_show_hidden(value)
     M._show_hidden = value
@@ -136,11 +134,6 @@ end
 M._root_nodes = {}
 function M.root_nodes()
     return M._root_nodes
-end
-
-if cwd ~= home_path and cwd ~= "/" then
-    local text = nvimutils.try_shorten_path(cwd)
-    table.insert(M._root_nodes, create_directory_node(M._directory_provider, text, cwd, "current working directory"))
 end
 
 table.insert(M._root_nodes, create_directory_node(M._directory_provider, "~/", home_path, "home directory"))
