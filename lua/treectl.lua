@@ -63,7 +63,7 @@ local function init_nodes()
     table.insert(root, nodes.help_node ("? = toggle help             Shift-L = expand             Shift-H = collapse"                  , { indicator = "none" }))
     table.insert(root, nodes.help_node (". = toggle node             } = next top-level           { = prev top-level"                  , { indicator = "none" }))
     table.insert(root, nodes.help_node ("g. = toggle hidden          ]] = next open top-level     [[ = up or prev open top-level"      , { indicator = "none" }))
-    table.insert(root, nodes.help_node ("` = toggle debug            _ = zoom traverse into       - = zoom traverse up"                , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("~ = toggle debug            _ = zoom traverse into       - = zoom traverse up"                , { indicator = "none" }))
     table.insert(root, nodes.help_node ("s = preview in hsplit       Enter = default action       Shift+Enter = preview + show actions", { indicator = "none" }))
     table.insert(root, nodes.help_node ("v = preview in vsplit       d = delete (if available)    p = paste (if available)"            , { indicator = "none" }))
 
@@ -214,7 +214,7 @@ local function show_tree()
     local map_options = { noremap = true, nowait = true, buffer = true }
 
     -- debug: toggle debug
-    vim.keymap.set("n", "`", function()
+    vim.keymap.set("n", "~", function()
         uiutils.preserve_cursor_selection(tree, function()
             show_debug = not show_debug
             tree:render()
