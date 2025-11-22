@@ -40,7 +40,7 @@ end
 table.insert(M._root_nodes, stash(nodes.lazy_node(
     "buffer",
     { hl = highlights.TreeModNvim, help_suffix = "lists open buffers", path = "neovim/buffer" },
-    providers.simple_provider(function(n, current_children)
+    providers.new_provider({ create_children = function(n, current_children)
         local buffer_recycler = recycler:recycler(
             current_children,
             function (v) return v.opts.path end,
@@ -57,13 +57,13 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
                 { path = "neovim/buffer/" .. b.bufnr }
             )))
         end)
-    end)))
+    end })))
 )
 
 table.insert(M._root_nodes, stash(nodes.lazy_node(
     "recent",
     { hl = highlights.TreeModNvim, help_suffix = "nvim oldfiles", path = "neovim/recent" },
-    providers.simple_provider(function(n, current_children)
+    providers.new_provider({ create_children = function(n, current_children)
         local recents_recycler = recycler:recycler(
             current_children,
             function (v) return v.details.index .. ":" .. v.details.filepath end,
@@ -84,7 +84,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
 
         return luautils.map(files, function(f, i)
             local shortened_path = nvimutils.try_shorten_path(f)
-            return recents_recycler:try_recycle(nodes.node(
+            return stash(recents_recycler:try_recycle(nodes.node(
                 { { "" .. (i - 1), highlights.Number }, " ", shortened_path },
                 {
                     path = "neovim/recent/" .. "\0" .. f,
@@ -93,16 +93,10 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
                         index = i - 1
                     }
                 }
-            ))
+            )))
         end)
-    end)))
+    end })))
 )
-
--- local windows = vim.api.nvim_list_wins()
--- for _, win in ipairs(windows) do
---   local buf = vim.api.nvim_win_get_buf(win)
---   print(string.format("Window ID: %d, Buffer ID: %d", win, buf))
--- end
 
 table.insert(M._root_nodes, stash(nodes.node("neovim", { hl = highlights.TreeModNvim, path = "neovim", help_suffix = "more neovim trees" }, {
         stash(nodes.node("window",       { hl = highlights.TreeModNvim, path = "neovim/window" })),
@@ -114,7 +108,7 @@ table.insert(M._root_nodes, stash(nodes.node("neovim", { hl = highlights.TreeMod
         stash(nodes.node("colorscheme",  { hl = highlights.TreeModNvim, path = "neovim/colorscheme" })),
         stash(nodes.node("plugin",       { hl = highlights.TreeModNvim, path = "neovim/plugin" })),
         nodes.node("see what telescope offers?"),
-    })))
+})))
 
 return M
 end

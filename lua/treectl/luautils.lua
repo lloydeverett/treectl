@@ -6,6 +6,12 @@ function M.insert_all(tbl, elements)
     end
 end
 
+function M.insert_all_kv(tbl, kv)
+    for k, v in pairs(kv) do
+        tbl[k] = v
+    end
+end
+
 function M.filter(array, predicate)
     local result = {}
     for i, v in ipairs(array) do
