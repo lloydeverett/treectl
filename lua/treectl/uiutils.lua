@@ -413,7 +413,7 @@ function M.follow_path(path, modules, print_debug)
         local module = modules.kv[module_name]
         local result, err = module.follow_path(path)
         if err == nil then
-            assert(result ~= nil, module_name .. ".follow_path returned nil path with no error code for path " .. M.node_get_path_display_text(path))
+            assert(result ~= nil, module_name .. ".follow_path returned nil path with no error code for path " .. M.node_get_path_display_text(result))
             if print_debug then
                 log = log .. "(" .. module_name .. ") " .. M.node_get_path_display_text(result)
                 print(log)
