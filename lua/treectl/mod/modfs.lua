@@ -53,7 +53,6 @@ local function node_from_file(provider, file)
     return nodes.lazy_node(nil, opts, provider)
 end
 
-
 local function init_file_provider()
     return {
       create_children = function(self, n, current_children)

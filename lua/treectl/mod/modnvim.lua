@@ -53,9 +53,7 @@ function M.follow_path(path, try_node_expansion_fn)
     return nil, paths.PATH_NOT_FOUND
 end
 
-table.insert(M._root_nodes, stash(nodes.lazy_node(
-    "buffer",
-    { hl = highlights.TreeModNvim, help_suffix = "lists open buffers", path = "neovim/buffer" },
+table.insert(M._root_nodes, stash(nodes.lazy_node( "buffer", { hl = highlights.TreeModNvim, help_suffix = "lists open buffers", path = "neovim/buffer" },
     providers.new_provider({ create_children = function(n, current_children)
         local buffer_recycler = recycler:recycler(
             current_children,
@@ -76,9 +74,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
     end })))
 )
 
-table.insert(M._root_nodes, stash(nodes.lazy_node(
-    "recent",
-    { hl = highlights.TreeModNvim, help_suffix = "nvim oldfiles", path = "neovim/recent" },
+table.insert(M._root_nodes, stash(nodes.lazy_node( "recent", { hl = highlights.TreeModNvim, help_suffix = "nvim oldfiles", path = "neovim/recent" },
     providers.new_provider({ create_children = function(n, current_children)
         local recents_recycler = recycler:recycler(
             current_children,
@@ -114,17 +110,61 @@ table.insert(M._root_nodes, stash(nodes.lazy_node(
     end })))
 )
 
-table.insert(M._root_nodes, stash(nodes.node("neovim", { hl = highlights.TreeModNvim, path = "neovim", help_suffix = "more neovim trees" }, {
-        stash(nodes.node("window",       { hl = highlights.TreeModNvim, path = "neovim/window" })),
-        stash(nodes.node("highlight",    { hl = highlights.TreeModNvim, path = "neovim/highlight" })),
-        stash(nodes.node("tab",          { hl = highlights.TreeModNvim, path = "neovim/tab" })),
-        stash(nodes.node("register",     { hl = highlights.TreeModNvim, path = "neovim/register" })),
-        stash(nodes.node("symbol",       { hl = highlights.TreeModNvim, path = "neovim/symbol" })),
-        stash(nodes.node("mark",         { hl = highlights.TreeModNvim, path = "neovim/mark" })),
-        stash(nodes.node("colorscheme",  { hl = highlights.TreeModNvim, path = "neovim/colorscheme" })),
-        stash(nodes.node("plugin",       { hl = highlights.TreeModNvim, path = "neovim/plugin" })),
-        nodes.node("see what telescope offers?"),
-})))
+local neovim_child_nodes = {}
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("window", { hl = highlights.TreeModNvim, path = "neovim/window" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("highlight", { hl = highlights.TreeModNvim, path = "neovim/highlight" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("tab", { hl = highlights.TreeModNvim, path = "neovim/tab" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("register", { hl = highlights.TreeModNvim, path = "neovim/register" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("symbol", { hl = highlights.TreeModNvim, path = "neovim/symbol" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("mark", { hl = highlights.TreeModNvim, path = "neovim/mark" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("colorscheme", { hl = highlights.TreeModNvim, path = "neovim/colorscheme" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(neovim_child_nodes, stash(nodes.lazy_node("plugin", { hl = highlights.TreeModNvim, path = "neovim/plugin" },
+    providers.new_provider({ create_children = function(n, current_children)
+        return {}
+    end })
+)))
+
+table.insert(M._root_nodes, stash(nodes.node(
+    "neovim",
+    { hl = highlights.TreeModNvim, path = "neovim", help_suffix = "more neovim trees" },
+    neovim_child_nodes
+)))
 
 return M
 end
