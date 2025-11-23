@@ -58,6 +58,20 @@ function M.node_expand(tree, n)
     end
 end
 
+function M.try_node_expansion(tree, n, callback)
+    if n:is_expanded() then
+        return callback()
+    end
+
+    M.node_expand(tree, n)
+
+    local result = callback()
+    if not result then
+        M.node_collapse(tree, n)
+    end
+    return result
+end
+
 function M.set_nodes_with_cache_invalidation(tree, new_nodes, parent_node_id)
     local parent_node = tree:get_node(parent_node_id)
 
@@ -404,14 +418,17 @@ function M.preserve_cursor_selection(tree, callback)
     end
 end
 
-function M.follow_path(path, modules, print_debug)
+function M.follow_path(tree, path, modules, print_debug)
+    local try_node_expansion_fn = function(n, callback)
+        return M.try_node_expansion(tree, n, callback)
+    end
     local log = nil
     if print_debug then
         log = paths.path_display_text(path) .. " -> "
     end
     for _, module_name in ipairs(modules.keys) do
         local module = modules.kv[module_name]
-        local result, err = module.follow_path(path)
+        local result, err = module.follow_path(path, try_node_expansion_fn)
         if err == nil then
             assert(result ~= nil, module_name .. ".follow_path returned nil path with no error code for path " .. M.node_get_path_display_text(result))
             if print_debug then

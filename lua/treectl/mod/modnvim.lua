@@ -22,7 +22,7 @@ local function stash(n)
     return M._cache:stash(n)
 end
 
-function M.follow_path(path)
+function M.follow_path(path, try_node_expansion_fn)
     if not luautils.starts_with(path, "neovim/") and path ~= "neovim" then
         return nil, paths.PATH_NOT_HANDLED
     end
@@ -30,10 +30,26 @@ function M.follow_path(path)
     if cached_value ~= nil then
         return cached_value
     end
-    -- if luautils.starts_with(path, "neovim/buffer") then
-    -- eval buffers
-    -- lookup in cache again
-    -- end
+    if luautils.starts_with(path, "neovim/buffer") then
+        local result = try_node_expansion_fn(M._cache:get("neovim/buffer"), function()
+            return M._cache:get(path)
+        end)
+        if result ~= nil then
+            return result
+        else
+            return nil, paths.PATH_NOT_FOUND
+        end
+    end
+    if luautils.starts_with(path, "neovim/recent") then
+        local result = try_node_expansion_fn(M._cache:get("neovim/recent"), function()
+            return M._cache:get(path)
+        end)
+        if result ~= nil then
+            return result
+        else
+            return nil, paths.PATH_NOT_FOUND
+        end
+    end
     return nil, paths.PATH_NOT_FOUND
 end
 

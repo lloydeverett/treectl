@@ -58,14 +58,15 @@ local function init_nodes()
 
     local root = {}
 
-    table.insert(root, nodes.debug_node("-- DEBUG MODE --"                                                                             , { indicator = "none" }))
-    table.insert(root, nodes.debug_node("!; = refresh node children  !/ = follow current path     !? = inspect current node"           , { indicator = "none" }))
-    table.insert(root, nodes.help_node ("? = toggle help             Shift-L = expand             Shift-H = collapse"                  , { indicator = "none" }))
-    table.insert(root, nodes.help_node (". = toggle node             } = next top-level           { = prev top-level"                  , { indicator = "none" }))
-    table.insert(root, nodes.help_node ("g. = toggle hidden          ]] = next open top-level     [[ = up or prev open top-level"      , { indicator = "none" }))
-    table.insert(root, nodes.help_node ("~ = toggle debug            _ = zoom traverse into       - = zoom traverse up"                , { indicator = "none" }))
-    table.insert(root, nodes.help_node ("s = preview in hsplit       Enter = default action       Shift+Enter = preview + show actions", { indicator = "none" }))
-    table.insert(root, nodes.help_node ("v = preview in vsplit       d = delete (if available)    p = paste (if available)"            , { indicator = "none" }))
+    table.insert(root, nodes.debug_node("-- DEBUG MODE --"                                                                                  , { indicator = "none" }))
+    table.insert(root, nodes.debug_node("!; = refresh node children  !/ = follow current path     !? = inspect current node"                , { indicator = "none" }))
+    table.insert(root, nodes.debug_node("!' = follow last path followed"                                                                                                  , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("? = toggle help             Shift-L = expand             Shift-H = collapse"                       , { indicator = "none" }))
+    table.insert(root, nodes.help_node (". = toggle node             } = next top-level           { = prev top-level"                       , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("g. = toggle hidden          ]] = next open top-level     [[ = up or prev open top-level"           , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("~ = toggle debug            _ = zoom traverse into       - = zoom traverse up"                     , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("s = preview in hsplit       Enter = default action       Shift+Enter = preview + show actions"     , { indicator = "none" }))
+    table.insert(root, nodes.help_node ("v = preview in vsplit       d = delete (if available)    p = paste (if available)"                 , { indicator = "none" }))
 
     luautils.insert_all(root, modules.kv.modfs.root_nodes())
     luautils.insert_all(root, modules.kv.modnvim.root_nodes())
@@ -213,6 +214,8 @@ local function show_tree()
 
     local map_options = { noremap = true, nowait = true, buffer = true }
 
+    local debug_last_path = nil
+
     -- debug: toggle debug
     vim.keymap.set("n", "~", function()
         uiutils.preserve_cursor_selection(tree, function()
@@ -225,10 +228,25 @@ local function show_tree()
     vim.keymap.set("n", "!/", function()
         local node = uiutils.current_node(tree)
         local path = nodes.node_get_path(node)
+        debug_last_path = path
         if path ~= nil then
-            uiutils.follow_path(path, modules, true)
+            uiutils.follow_path(tree, path, modules, true)
+            tree:render()
         else
             print("node path is nil")
+        end
+    end, map_options)
+
+    -- debug: follow last path followed
+    vim.keymap.set("n", "!'", function()
+        if debug_last_path == nil then
+            print("last followed path is nil")
+            return
+        end
+        local n = uiutils.follow_path(tree, debug_last_path, modules, true)
+        tree:render()
+        if n ~= nil then
+            uiutils.place_cursor_on_node(tree, n)
         end
     end, map_options)
 
