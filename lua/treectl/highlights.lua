@@ -1,6 +1,4 @@
 
-local minicolors = require("treectl.mini.colors")
-
 local M = {}
 
 M.Comment = "treectl_Comment"
@@ -17,24 +15,10 @@ M.TreeModBuiltins = "treectl_TreeModBuiltins"
 M.TreeModOther = "treectl_TreeModOther"
 
 function M.configure()
-    local color_scheme = minicolors.get_colorscheme()
-    local function term_palette_color(index)
-        return color_scheme.terminal[index]
-    end
-    vim.notify(vim.inspect(color_scheme.terminal))
-    local function set_termcolor_hl(name, color_index)
-        local cmd = "hi! def " .. name .. " ctermfg=" .. color_index
-        if term_palette_color(color_index) ~= nil then
-            cmd = cmd .. " guifg=" .. term_palette_color(color_index)
-        end
-        vim.cmd(cmd)
-    end
-
-    set_termcolor_hl(M.TreeModFs,       2)
-    set_termcolor_hl(M.TreeModNvim,     5)
-    set_termcolor_hl(M.TreeModBuiltins, 6)
-    set_termcolor_hl(M.TreeModOther,    4)
-
+    vim.api.nvim_set_hl(0, M.TreeModFs,         { fg = vim.g["terminal_color_" .. 2], ctermfg = 2, force = true })
+    vim.api.nvim_set_hl(0, M.TreeModNvim,       { fg = vim.g["terminal_color_" .. 5], ctermfg = 5, force = true })
+    vim.api.nvim_set_hl(0, M.TreeModBuiltins,   { fg = vim.g["terminal_color_" .. 6], ctermfg = 6, force = true })
+    vim.api.nvim_set_hl(0, M.TreeModOther,      { fg = vim.g["terminal_color_" .. 4], ctermfg = 4, force = true })
     vim.api.nvim_set_hl(0, M.Comment,           { link = "Comment"     })
     vim.api.nvim_set_hl(0, M.Hidden,            { link = "Comment"     })
     vim.api.nvim_set_hl(0, M.Directory,         { link = M.TreeModFs   })
