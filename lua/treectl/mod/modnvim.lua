@@ -67,7 +67,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node( "buffer", { hl = highlights.T
                 display_name = "[No Name]"
             end
             return stash(buffer_recycler:try_recycle(nodes.node(
-                { { "" .. b.bufnr, highlights.Number }, " ", display_name },
+                { display_name, " ", { "" .. b.bufnr, highlights.Number } },
                 { path = "neovim/buffer/" .. b.bufnr }
             )))
         end)
@@ -97,7 +97,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node( "recent", { hl = highlights.T
         return luautils.map(files, function(f, i)
             local shortened_path = nvimutils.try_shorten_path(f)
             return stash(recents_recycler:try_recycle(nodes.node(
-                { { "" .. (i - 1), highlights.Number }, " ", shortened_path },
+                { shortened_path, " ", { "" .. (i - 1), highlights.Number } },
                 {
                     path = "neovim/recent/" .. "\0" .. f,
                     details = {
