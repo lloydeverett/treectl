@@ -4,6 +4,7 @@ local luautils = require("treectl.luautils")
 local nvimutils = require("treectl.nvimutils")
 local recycler = require("treectl.recycler")
 local highlights = require("treectl.highlights")
+local providers = require("treectl.providers")
 
 local home_path = nvimutils.home_path()
 
@@ -54,7 +55,7 @@ local function node_from_file(provider, file)
 end
 
 local function init_file_provider()
-    return {
+    return providers.new_provider({
       create_children = function(self, n, current_children)
           if not n.details.is_directory then
               return {}
@@ -79,11 +80,9 @@ local function init_file_provider()
           end
           return result
       end,
-
       allows_expand = function(self, n)
           return n.details.is_directory
       end,
-
       text = function(self, n)
           local result = {}
 
@@ -110,11 +109,10 @@ local function init_file_provider()
 
           return result
       end,
-
       path = function(self, n)
           return n.details.path
       end,
-    }
+    })
 end
 
 local function create_directory_node(provider, text, path, help_suffix)
