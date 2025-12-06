@@ -1,4 +1,6 @@
 
+local minicolors = require("treectl.mini.colors")
+
 local M = {}
 
 M.Comment = "treectl_Comment"
@@ -15,10 +17,15 @@ M.TreeModBuiltins = "treectl_TreeModBuiltins"
 M.TreeModOther = "treectl_TreeModOther"
 
 function M.configure()
+    local color_scheme = minicolors.get_colorscheme()
+    local function term_palette_color(index)
+        return color_scheme.terminal[index]
+    end
+    vim.notify(vim.inspect(color_scheme.terminal))
     local function set_termcolor_hl(name, color_index)
-        local cmd = "hi def " .. name .. " ctermfg=" .. color_index
-        if vim.g['terminal_color_' .. color_index] ~= nil then
-            cmd = cmd .. " guifg=" .. vim.g['terminal_color_' .. color_index]
+        local cmd = "hi! def " .. name .. " ctermfg=" .. color_index
+        if term_palette_color(color_index) ~= nil then
+            cmd = cmd .. " guifg=" .. term_palette_color(color_index)
         end
         vim.cmd(cmd)
     end
