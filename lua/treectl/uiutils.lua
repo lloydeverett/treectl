@@ -264,7 +264,7 @@ function M.node_get_nui_line(n, render_opts)
 end
 
 function M.current_cursor_pos()
-    local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
+    local row, col = (table.unpack or unpack)(vim.api.nvim_win_get_cursor(0))
     return row, col
 end
 

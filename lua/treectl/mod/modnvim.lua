@@ -92,7 +92,7 @@ table.insert(M._root_nodes, stash(nodes.lazy_node( "recent", { hl = highlights.T
             return true
         end)
 
-        files = { table.unpack(files, 1, M._max_recents) }
+        files = { (table.unpack or unpack)(files, 1, M._max_recents) }
 
         return luautils.map(files, function(f, i)
             local shortened_path = nvimutils.try_shorten_path(f)
