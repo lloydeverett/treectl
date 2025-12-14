@@ -16,7 +16,7 @@ xsqlite3() {
     $ALIASES_SQLITE_BIN \
         -cmd ".load $(sqlpkg which nalgeon/sqlean)" \
         -cmd ".load $(sqlpkg which asg017/lines)" \
-        -cmd ".load $(sqlpkg which jhowie/envfuncs)" \:
+        -cmd ".load $(sqlpkg which jhowie/envfuncs)" \
         "$@"
 }
 
