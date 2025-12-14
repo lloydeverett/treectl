@@ -1,16 +1,22 @@
 #!/bin/bash
 
-# homebrew sqlite3 (in case system sqlite3 needs to stay on the $PATH)
+# look for user sqlite3; system sqlite3 may need to stay on the $PATH
+ALIASES_SQLITE_BIN="/opt/homebrew/opt/sqlite/bin/sqlite3"
+if ! command -v "$ALIASES_SQLITE_BIN" >/dev/null 2>&1
+then
+    # homebrew sqlite3 not found; use the binary on the $PATH
+    ALIASES_SQLITE_BIN="sqlite3"
+fi
 hsqlite3() {
-    /opt/homebrew/opt/sqlite/bin/sqlite3 "$@"
+    $ALIASES_SQLITE_BIN "$@"
 }
 
 # sqlite3 with extra goodies
 xsqlite3() {
-    /opt/homebrew/opt/sqlite/bin/sqlite3 \
+    $ALIASES_SQLITE_BIN \
         -cmd ".load $(sqlpkg which nalgeon/sqlean)" \
         -cmd ".load $(sqlpkg which asg017/lines)" \
-        -cmd ".load $(sqlpkg which jhowie/envfuncs)" \
+        -cmd ".load $(sqlpkg which jhowie/envfuncs)" \:
         "$@"
 }
 
