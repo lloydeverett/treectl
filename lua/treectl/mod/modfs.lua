@@ -23,6 +23,7 @@ function M.show_hidden()
 end
 
 function M.follow_path(path)
+    --  TODO: Implement
     return nil, paths.PATH_NOT_HANDLED
 end
 
